@@ -1,0 +1,1 @@
+﻿package net.vis4.geom.delaunay  {		public class XYZ {				public var x:Number, y:Number, z:Number;				public function XYZ(_x:Number = Number.NaN, _y:Number = Number.NaN, _z:Number = Number.NaN) {			if (isNaN(_x)) {							} else {				this.x = _x;				this.y = _y;				this.z = _z;			}								}		}}
