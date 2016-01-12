@@ -43,10 +43,10 @@ package {
 			,	_pointsArray		:Array
 		;	
 		
-		private var 	_graphics			:Graphics;
-		private var 	_mouseGraphics		:Graphics;
+		private var _graphics			:Graphics;
+		private var _mouseGraphics		:Graphics;
 		
-		private var		_counter			:uint;
+		private var	_counter			:uint;
 		
 		private var pointsData:*;
 		private var _boundingBox:BoundingBox;
@@ -174,13 +174,15 @@ package {
 			_shapeCenterX = (_point.x  + _nextPoint.x) * tempcalc;
 			_shapeCenterY = (_point.y  + _nextPoint.y) * tempcalc;
 			
-			_vector = new Point(int(_nextPoint.x - _point.x), int(_nextPoint.y - _point.y))
-			_vectors[_counter] = _vector;
-			
 			_graphics.moveTo(_point.x + 1, _point.y + 1);
 			
-			while (_counter) {
-				_point 		= pointsData[--_counter];
+			/**
+			 * COLLISION PRE-CALCULATION
+			 */
+			_vector = new Point(int(_nextPoint.x - _point.x), int(_nextPoint.y - _point.y))
+			_vectors[_counter] = _vector;
+			while (_counter--) {
+				_point 		= pointsData[_counter];
 				_nextPoint 	= _counter != 0 ?  pointsData[_counter - 1] : pointsData[_points.length - 1];
 				
 				_shapeArea += (_point.x * _nextPoint.y) - (_nextPoint.x * _point.y);
@@ -188,11 +190,14 @@ package {
 				_shapeCenterX += (_point.x  + _nextPoint.x) * tempcalc;
 				_shapeCenterY += (_point.y  + _nextPoint.y) * tempcalc;
 				
-				_vector = new Point(int(_nextPoint.x - _point.x), int(_nextPoint.y - _point.y))
+				/* CALCULATE VECTORS */ _vector = new Point(int(_nextPoint.x - _point.x), int(_nextPoint.y - _point.y))
 				_vectors[_counter] = _vector;
 				
 				drawEntity();
 			}
+			/**
+			 * END PRE-CALCULATION
+			 */
 			_counter = _vertexCount-1;
 			_point = pointsData[_vertexCount - 1];
 			drawEntity();
@@ -252,15 +257,23 @@ package {
 
 			timer = getTimer();
 			
-			_isInside = false;
-			if (Point.distance(_shapeCenter, _mouse) < _shapeRadius) {
-				_isInside = true;
-				while (_counter) {
-					_point = pointsData[--_counter];
+			_isInside = Point.distance(_shapeCenter, _mouse) < _shapeRadius;
+			if (_isInside) {
+				/**
+				 * COLLISION CALCULATION
+				 */
+				while (_counter--) {
+					_point = pointsData[_counter];
 					_vector = _vectors[_counter];
 					_isCollide = VProd(_vector.x, _vector.y, _point.x - _mouse.x, _point.y - _mouse.y) < 0;
-					if (_isCollide == false) _isInside = false;
+					if (_isCollide == false) {
+						_isInside = false;
+						break;
+					}
 				}
+				/**
+				 * END COLLISION CALCULATION
+				 */
 				
 				_counter = _vertexCount;
 				while (_counter) {
@@ -278,11 +291,10 @@ package {
 					_mouseGraphics.lineTo(_mouse.x, _mouse.y);
 				}
 				
-				trace("Draw Time: ", (getTimer() - timer));
+				//trace("Draw Time: ", (getTimer() - timer));
 			}
 			_mouseGraphics.beginFill(_isInside ? 0x00fa00 : 0xfa0000);
 			_mouseGraphics.drawCircle(mouseX, mouseY, 4);
-			
 		}
 		
 		private function random(from:Number, to:Number):Number
