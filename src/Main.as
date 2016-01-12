@@ -22,37 +22,36 @@ package {
 		
 		
 		private var 
-				_vertexCount		:uint = 7
-			,	_point				:Point = new Point()
-			,	_vector				:Point = new Point()
-			,	_mouse				:Point = new Point()
-			,	_center				:Point = new Point()
-			
-			,	_shapeArea			:Number = 0
-			,	_shapeRadius		:Number = 0
-			,	_shapeCenterX		:Number = 0
-			,	_shapeCenterY		:Number = 0
-			,	_shapeCenter		:Point
+			_vertexCount		:uint = 7
+		,	_point				:Point = new Point()
+		,	_vector				:Point = new Point()
+		,	_mouse				:Point = new Point()
+		,	_center				:Point = new Point()
 		
-			,	_prevpoints			:Vector.<Point> 	= new Vector.<Point>(_vertexCount)
-			,	_deltapoints		:Vector.<Point> 	= new Vector.<Point>(_vertexCount)
-			,	_points				:Vector.<Point> 	= new Vector.<Point>(_vertexCount)
-			,	_vectors			:Vector.<Point> 	= new Vector.<Point>(_vertexCount)
-			,	_colors				:Vector.<uint> 		= new Vector.<uint>(_vertexCount)
-			,	_colorsGrey			:Vector.<uint> 		= new Vector.<uint>(_vertexCount)
-			,	_pointsArray		:Array
+		,	_shapeArea			:Number = 0
+		,	_shapeRadius		:Number = 0
+		,	_shapeCenterX		:Number = 0
+		,	_shapeCenterY		:Number = 0
+		,	_shapeCenter		:Point
+	
+		,	_prevpoints			:Vector.<Point> 	= new Vector.<Point>(_vertexCount)
+		,	_deltapoints		:Vector.<Point> 	= new Vector.<Point>(_vertexCount)
+		,	_points				:Vector.<Point> 	= new Vector.<Point>(_vertexCount)
+		,	_vectors			:Vector.<Point> 	= new Vector.<Point>(_vertexCount)
+		,	_colors				:Vector.<uint> 		= new Vector.<uint>(_vertexCount)
+		,	_colorsGrey			:Vector.<uint> 		= new Vector.<uint>(_vertexCount)
+		,	_pointsArray		:Array
 		;	
 		
-		private var _graphics			:Graphics;
-		private var _mouseGraphics		:Graphics;
-		
-		private var	_counter			:uint;
+		private var _graphics		:Graphics;
+		private var _mouseGraphics	:Graphics;
+		private var _boundingBox	:BoundingBox;
+		private var	_counter		:uint;
 		
 		private var pointsData:*;
-		private var _boundingBox:BoundingBox;
 		
-		private var isInside:Boolean = false;
-		private var isConstructed:Boolean = false;
+		private var isInside		:Boolean = false;
+		private var isConstructed	:Boolean = false;
 		
 		public function Main():void { if (stage) init(); else addEventListener(Event.ADDED_TO_STAGE, init); }
 		private function init(e:Event = null):void {
@@ -100,9 +99,9 @@ package {
 			while (_counter--) {
 				_point = new Point(uint(random(100, 400)), uint(random(100, 400)));
 				_points[_counter] = _point;
-				//_pointsArray.push(_point);
+				_pointsArray.push(_point);
 			}
-			//_points = SortingVectors.quickSort(_points, 0 , 3);
+			_points = SortingVectors.quickSort(_points, 0 , 3);
 			//pointsData = _points;
 
 			pointsData = GrahamScan.order( _pointsArray ).reverse();
@@ -233,8 +232,6 @@ package {
 			_graphics.lineTo(_boundingBox.right, _boundingBox.bottom);
 			_graphics.lineTo(_boundingBox.left, _boundingBox.bottom);
 			_graphics.lineTo(_boundingBox.left, _boundingBox.top);
-			
-			Capabilities.screenDPI
 			
 			trace("Area: Circle | BoundingBox = ", Math.PI * Math.pow(_shapeRadius,2) * 2.54 / Capabilities.screenDPI, _boundingBox.areaCM);
 			
